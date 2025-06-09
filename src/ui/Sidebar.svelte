@@ -23,24 +23,30 @@ let dispatch = createEventDispatcher<{ tidy: undefined }>();
 
 <aside id="sidebar">
 	<form on:submit={() => false}>
-		<header class="intro">
-			<h1>BibTeX Tidy</h1>
-			<p>
-				This tool tidies bibtex files by fixing inconsistent whitespace,
-				removing duplicates, removing unwanted fields, and sorting entries.
-			</p>
-			<p>
-				<a class="btn" href="https://github.com/FlamingTempura/bibtex-tidy">
-					Github
-				</a>
-				<a
-					class="btn"
-					href="https://github.com/FlamingTempura/bibtex-tidy/issues"
-				>
-					Report a bug
-				</a>
-			</p>
-		</header>
+        <header class="intro">
+            <h1>BibTeX Tidy</h1>
+            <p>
+               This tool tidies bibtex files by fixing inconsistent whitespace,
+               removing duplicates, removing unwanted fields, and sorting entries.
+            </p>
+            <p>
+               Fork of <a href="https://github.com/FlamingTempura/bibtex-tidy">BibTeX Tidy</a> by Peter West.
+            </p>
+            <p>
+                Modified by <a href="https://abawi.me">Fares Abawi</a>
+            </p>
+            <p>
+               <a class="btn" href="https://github.com/TeXlyre/bibtex-tidy">
+                  Github
+               </a>
+               <a
+                  class="btn"
+                  href="https://github.com/TeXlyre/bibtex-tidy/issues"
+               >
+                  Report a bug
+               </a>
+            </p>
+        </header>
 
 		<IndentOptions bind:options />
 		<WhitespaceOptions bind:options />
