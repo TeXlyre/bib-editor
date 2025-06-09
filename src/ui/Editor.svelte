@@ -13,8 +13,10 @@ import {
 	lineNumbers,
 } from "@codemirror/view";
 import { onMount } from "svelte";
-import type { BibTeXSyntaxError } from "../bibtexParser";
+import type { BibTeXSyntaxError } from "../parsers/bibtexParser";
 import CopyButton from "./CopyButton.svelte";
+import ViewToggleButton from "./ViewToggleButton.svelte";
+import TableView from "./TableView.svelte";
 import {
 	bibtexLanguage,
 	bibtexSyntaxHighlighting,
@@ -26,8 +28,11 @@ export let error: BibTeXSyntaxError | undefined;
 let editorRef: HTMLElement;
 let cmEditor: EditorView | undefined;
 let lintCompartment: Compartment;
+let isTableView = false;
 
-onMount(() => {
+function createEditor() {
+	if (!editorRef || cmEditor) return;
+
 	const onUpdate = EditorView.updateListener.of((v: ViewUpdate) => {
 		if (cmEditor && v.docChanged) {
 			bibtex = cmEditor.state.doc.toString();
@@ -42,41 +47,33 @@ onMount(() => {
 			doc: bibtex,
 			extensions: [
 				lineNumbers(),
-
 				highlightActiveLineGutter(),
-
-				// For dragging text onto the editor
 				dropCursor(),
-
 				EditorState.allowMultipleSelections.of(true),
-
-				// Highlight matching brackets
 				bracketMatching(),
-
-				// Replace native selection with customisable one (e.g. background
-				// color)
 				drawSelection(),
-
 				bibtexLanguage(),
 				bibtexSyntaxHighlighting(),
-
 				keymap.of([...historyKeymap, indentWithTab]),
-				// Enables undo/redo. Without this, codemirror completely bugs out on
-				// undo/redo
 				history(),
-				// Listen for changes and propagate to state
 				onUpdate,
-
 				lintCompartment.of([]),
 			],
 		}),
 	});
 
 	cmEditor.focus();
-
-	// make editor available for tests
 	window.cmEditor = cmEditor;
+}
+
+onMount(() => {
+	createEditor();
 });
+
+// Recreate editor when switching from table to editor view
+$: if (!isTableView && editorRef && !cmEditor) {
+	createEditor();
+}
 
 $: {
 	cmEditor?.dispatch({
@@ -95,57 +92,77 @@ $: {
 }
 
 $: {
-	// update editor content from incoming state
 	if (cmEditor && bibtex !== cmEditor.state.doc.toString()) {
 		cmEditor.dispatch({
 			changes: { from: 0, to: cmEditor.state.doc.length, insert: bibtex },
 		});
 	}
 }
+
+function handleViewToggle() {
+	if (!isTableView && cmEditor) {
+		// Switching to table view - destroy editor
+		cmEditor.destroy();
+		cmEditor = undefined;
+	}
+	isTableView = !isTableView;
+}
 </script>
 
-<main id="editor" bind:this={editorRef}>
+<main id="editor">
 	<CopyButton {bibtex} />
+	<ViewToggleButton {isTableView} on:toggle={handleViewToggle} />
+
+	{#if isTableView}
+		<TableView {bibtex} />
+	{:else}
+		<div bind:this={editorRef} class="codemirror-container"></div>
+	{/if}
 </main>
 
 <style>
-	#editor {
-		flex-grow: 1;
-		position: relative;
-		overflow: hidden;
-	}
-	:global(.cm-editor) {
-		color: var(--dark-gray);
-		height: 100%;
-	}
+#editor {
+	flex-grow: 1;
+	position: relative;
+	overflow: hidden;
+}
 
-	:global(.cm-editor .cm-scroller) {
-		font: var(--mono-normal);
-		font-size: 14px;
-		line-height: 1.3em;
-		padding: 12px 0 12px 0;
-	}
-	:global(.cm-editor .cm-gutters) {
-		background: var(--main-bg);
-		border-right: 14px solid var(--main-bg);
-		color: var(--light6);
-		padding-left: 12px;
-	}
-	:global(.cm-editor .cm-activeLineGutter) {
-		background: var(--main-bg);
-		color: var(--light1);
-	}
-	:global(.cm-editor .cm-gutters .cm-gutter) {
-		min-width: 32px;
-	}
-	:global(.cm-editor .cm-selectionBackground) {
-		background: #283655 !important;
-	}
-	:global(.cm-editor .cm-cursor) {
-		border-left: 2px solid #ffffec;
-	}
-	:global(.cm-editor .cm-lintRange-error) {
-		background: none;
-		border-bottom: 2px solid var(--red);
-	}
+.codemirror-container {
+	height: 100%;
+}
+
+:global(.cm-editor) {
+	color: var(--dark-gray);
+	height: 100%;
+}
+
+:global(.cm-editor .cm-scroller) {
+	font: var(--mono-normal);
+	font-size: 14px;
+	line-height: 1.3em;
+	padding: 12px 0 12px 0;
+}
+:global(.cm-editor .cm-gutters) {
+	background: var(--main-bg);
+	border-right: 14px solid var(--main-bg);
+	color: var(--light6);
+	padding-left: 12px;
+}
+:global(.cm-editor .cm-activeLineGutter) {
+	background: var(--main-bg);
+	color: var(--light1);
+}
+:global(.cm-editor .cm-gutters .cm-gutter) {
+	min-width: 32px;
+}
+:global(.cm-editor .cm-selectionBackground) {
+	background: #283655 !important;
+}
+:global(.cm-editor .cm-cursor) {
+	border-left: 2px solid #ffffec;
+}
+:global(.cm-editor .cm-lintRange-error) {
+	background: none;
+	border-bottom: 2px solid var(--red);
+}
 </style>
