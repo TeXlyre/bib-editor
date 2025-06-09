@@ -39,8 +39,8 @@ const handleToggle = () => {
 <style>
 #view-toggle {
 	position: absolute;
-	top: 12px;
-	right: 102px;
+	bottom: 52px;
+	right: 12px;
 	font-weight: bold;
 	font-size: 15px;
 	z-index: 100;

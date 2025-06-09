@@ -37,7 +37,7 @@ const handleCopy = () => {
 <style>
 	#copy {
 		position: absolute;
-		top: 12px;
+		bottom: 12px;
 		right: 12px;
 		font-weight: bold;
 		font-size: 15px;
