@@ -1,5 +1,5 @@
 <script lang="ts">
-import { history, historyKeymap, indentWithTab } from "@codemirror/commands";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import { bracketMatching } from "@codemirror/language";
 import { linter } from "@codemirror/lint";
 import { Compartment, EditorState } from "@codemirror/state";
@@ -59,7 +59,7 @@ function createEditor() {
 				drawSelection(),
 				bibtexLanguage(),
 				bibtexSyntaxHighlighting(),
-				keymap.of([...historyKeymap, indentWithTab]),
+				keymap.of([...defaultKeymap,...historyKeymap, indentWithTab]),
 				history(),
 				onUpdate,
 				lintCompartment.of([]),
