@@ -10,7 +10,7 @@ import { convertCRLF } from "./utils";
 
 const verbose = false;
 
-export function tidy(input: string, options_: Options = {}): BibTeXTidyResult {
+export async function tidy(input: string, options_: Options = {}): Promise<BibTeXTidyResult> {
 	const options = normalizeOptions(options_);
 	const inputFixed = convertCRLF(input);
 	const ast = parseBibTeX(inputFixed);
@@ -30,7 +30,7 @@ export function tidy(input: string, options_: Options = {}): BibTeXTidyResult {
 	}
 
 	for (const transform of pipeline) {
-		const result = transform.apply(cache);
+		const result = await transform.apply(cache);
 		if (verbose) {
 			console.log(`\n\n## Applying transform: ${transform.name}`);
 			console.log(logAST(ast));

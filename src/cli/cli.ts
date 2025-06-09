@@ -82,7 +82,7 @@ async function tidyStdIn(options: BibTeXTidyOptions) {
 	}
 
 	console.log("Tidying...");
-	const result = tidy(await readStdin(), options);
+	const result = await tidy(await readStdin(), options);
 
 	if (options.outputPath) {
 		await tidyToOutputFile(result, options.outputPath, options);
@@ -115,7 +115,7 @@ async function tidyInputFiles(
 
 		console.log("Tidying...");
 		for (const inputFile of inputFiles) {
-			const result = tidy(await readFile(inputFile, "utf8"), options);
+			const result = await tidy(await readFile(inputFile, "utf8"), options);
 			await tidyToOutputFile(result, inputFile, options);
 		}
 	} else if (inputFiles.length > 1) {
@@ -129,7 +129,7 @@ async function tidyInputFiles(
 
 		console.log("Tidying...");
 		assert(inputFiles[0]);
-		const result = tidy(await readFile(inputFiles[0], "utf8"), options);
+		const result = await tidy(await readFile(inputFiles[0], "utf8"), options);
 
 		if (options.outputPath) {
 			await tidyToOutputFile(result, options.outputPath, options);

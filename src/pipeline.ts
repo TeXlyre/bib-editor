@@ -11,6 +11,7 @@ import { createFormatPageRangeTransform } from "./transforms/formatPageRange";
 import { createGenerateKeysTransform } from "./transforms/generateKeys";
 import { createIndentFieldsTransform } from "./transforms/indentFields";
 import { createLimitAuthorsTransform } from "./transforms/limitAuthors";
+import { createLookupDoisTransform } from "./transforms/lookupDois";
 import { createLowercaseEntryTypeTransform } from "./transforms/lowercaseEntryType";
 import { createLowercaseFieldsTransform } from "./transforms/lowercaseFields";
 import { createMergeEntriesTransform } from "./transforms/mergeEntries";
@@ -74,6 +75,9 @@ export function generateTransformPipeline(
 	}
 	if (options.maxAuthors) {
 		pipeline.push(createLimitAuthorsTransform(options.maxAuthors));
+	}
+	if (options.lookupDois) {
+		pipeline.push(createLookupDoisTransform());
 	}
 	if (options.lowercase) {
 		pipeline.push(

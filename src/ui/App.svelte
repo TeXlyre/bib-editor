@@ -6,7 +6,7 @@ import Editor from "./Editor.svelte";
 import Sidebar from "./Sidebar.svelte";
 import { DEFAULT_BIBTEX } from "./defaultBibtex";
 
-// Unfortunatly when the UI was originally made public it had different
+// Unfortunately when the UI was originally made public it had different
 // defaults to the CLI/JS API. In future it might be good to make the UI
 // consistent.
 const optionDefaults = normalizeOptions({
@@ -31,14 +31,13 @@ let status:
 	| undefined;
 let error: BibTeXSyntaxError | undefined;
 
-function handleTidy() {
+async function handleTidy() {
 	running = true;
 	status = undefined;
 	error = undefined;
-	setTimeout(() => {
-		// TODO: requestAnimationFrame
+	setTimeout(async () => {
 		try {
-			const result = tidy(bibtex, options);
+			const result = await tidy(bibtex, options);
 			bibtex = result.bibtex;
 			status = { status: "success", result };
 		} catch (e: unknown) {

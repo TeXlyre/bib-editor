@@ -14,6 +14,7 @@ let enableEscape = options.escape ?? false;
 let encodeUrls = options.encodeUrls ?? false;
 let removeEmptyFields = options.removeEmptyFields ?? false;
 let removeDuplicateFields = options.removeDuplicateFields ?? false;
+let lookupDois = options.lookupDois ?? false;
 
 let maxAuthorsChecked = options.maxAuthors !== undefined;
 let maxAuthorsValue = options.maxAuthors ?? 3;
@@ -24,7 +25,7 @@ let enclosingBracesValue = options.enclosingBraces?.join(" ") ?? "title";
 
 let removeBracesChecked =
 	options.removeBraces !== undefined && options.removeBraces.length > 0;
-let removeBracesValue = options.enclosingBraces?.join(" ") ?? "title";
+let removeBracesValue = options.removeBraces?.join(" ") ?? "title";
 
 $: {
 	options.curly = curly;
@@ -36,6 +37,7 @@ $: {
 	options.encodeUrls = encodeUrls;
 	options.removeEmptyFields = removeEmptyFields;
 	options.removeDuplicateFields = removeDuplicateFields;
+	options.lookupDois = lookupDois;
 	options.maxAuthors = maxAuthorsChecked ? maxAuthorsValue : undefined;
 	options.enclosingBraces =
 		enclosingBracesChecked && enclosingBracesValue.length > 0
@@ -94,6 +96,8 @@ $: {
 	<Option option="removeEmptyFields" bind:checked={removeEmptyFields} />
 
 	<Option option="removeDuplicateFields" bind:checked={removeDuplicateFields} />
+
+	<Option option="lookupDois" bind:checked={lookupDois} />
 
 	<Option option="maxAuthors" bind:checked={maxAuthorsChecked}>
 		<label>

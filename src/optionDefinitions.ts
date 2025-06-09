@@ -556,4 +556,15 @@ export const optionDefinitions: OptionDefinition[] = [
 		defaultValue: true,
 		deprecated: true,
 	},
+	{
+		key: "lookupDois",
+		cli: { "--lookup-dois": true },
+		toCLI: (val) => (val ? "--lookup-dois" : undefined),
+		title: "Lookup missing DOIs",
+		description: [
+			"Search for missing DOI fields using CrossRef. This will query CrossRef's database using the entry's title and author information to find matching DOIs.",
+		],
+		type: "boolean",
+		defaultValue: false,
+	},
 ];
