@@ -12,7 +12,7 @@ import {
 	keymap,
 	lineNumbers,
 } from "@codemirror/view";
-import { onMount } from "svelte";
+import { onMount, createEventDispatcher } from "svelte";
 import type { BibTeXSyntaxError } from "../parsers/bibtexParser";
 import CopyButton from "./CopyButton.svelte";
 import ViewToggleButton from "./ViewToggleButton.svelte";
@@ -24,11 +24,16 @@ import {
 
 export let bibtex: string;
 export let error: BibTeXSyntaxError | undefined;
+export let isTableView: boolean;
+
+const dispatch = createEventDispatcher<{
+	toggle: undefined;
+	update: string;
+}>();
 
 let editorRef: HTMLElement;
 let cmEditor: EditorView | undefined;
 let lintCompartment: Compartment;
-let isTableView = false;
 
 function createEditor() {
 	if (!editorRef || cmEditor) return;
@@ -93,9 +98,20 @@ $: {
 
 $: {
 	if (cmEditor && bibtex !== cmEditor.state.doc.toString()) {
+		const currentPos = cmEditor.state.selection.main.head;
 		cmEditor.dispatch({
 			changes: { from: 0, to: cmEditor.state.doc.length, insert: bibtex },
+			selection: { anchor: Math.min(currentPos, bibtex.length) }
 		});
+	}
+}
+
+// When bibtex changes externally (from tidy operations), we need to invalidate table positions
+let lastExternalBibtex = bibtex;
+$: {
+	if (bibtex !== lastExternalBibtex && !isTableView) {
+		// This is an external change (like from tidy), invalidate positions
+		lastExternalBibtex = bibtex;
 	}
 }
 
@@ -105,7 +121,11 @@ function handleViewToggle() {
 		cmEditor.destroy();
 		cmEditor = undefined;
 	}
-	isTableView = !isTableView;
+	dispatch('toggle');
+}
+
+function handleTableUpdate(event: CustomEvent<string>) {
+	dispatch('update', event.detail);
 }
 </script>
 
@@ -114,7 +134,7 @@ function handleViewToggle() {
 	<ViewToggleButton {isTableView} on:toggle={handleViewToggle} />
 
 	{#if isTableView}
-		<TableView {bibtex} />
+		<TableView {bibtex} on:update={handleTableUpdate} />
 	{:else}
 		<div bind:this={editorRef} class="codemirror-container"></div>
 	{/if}

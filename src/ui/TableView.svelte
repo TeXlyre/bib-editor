@@ -256,7 +256,9 @@ function saveEdit() {
 		}
 
 		updatePositions(pos, offset);
-		console.log("Dispatching updated bibtex:", newText.substring(0, 200) + "...");
+
+		// Update the local bibtex and dispatch the change
+		bibtex = newText;
 		dispatch("update", newText);
 	} catch (error) {
 		console.error("Failed to save edit:", error);

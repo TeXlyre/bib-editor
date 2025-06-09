@@ -23,6 +23,7 @@ const optionDefaults = normalizeOptions({
 let running = false;
 let bibtex: string = DEFAULT_BIBTEX;
 let options: OptionsNormalized = getOptionsFromURL() ?? optionDefaults;
+let isTableView = false;
 
 let status:
 	| { status: "success"; result: BibTeXTidyResult }
@@ -52,6 +53,10 @@ function handleTidy() {
 	}, 100);
 }
 
+function handleTableUpdate(event: CustomEvent<string>) {
+	bibtex = event.detail;
+}
+
 function getOptionsFromURL(): OptionsNormalized | undefined {
 	const queryString = window.location.search;
 	const urlParams = new URLSearchParams(queryString);
@@ -74,9 +79,13 @@ $: {
 	const params = new URLSearchParams([["opt", optionsJSON]]);
 	window.history.pushState(options, "", `index.html?${params.toString()}`);
 }
+
+function handleViewToggle() {
+	isTableView = !isTableView;
+}
 </script>
 
-<Editor bind:bibtex {error} />
+<Editor bind:bibtex {error} {isTableView} on:toggle={handleViewToggle} on:update={handleTableUpdate} />
 <Sidebar on:tidy={handleTidy} {status} {running} bind:options />
 
 <style>
