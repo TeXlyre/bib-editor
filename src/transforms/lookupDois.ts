@@ -4,68 +4,68 @@ import { parseNameList } from "../parsers/nameFieldParser";
 import type { Transform, Warning } from "../types";
 
 export function createLookupDoisTransform(): Transform {
-	return {
-		name: "lookup-dois",
-		apply: async (astProxy) => {
-			const warnings: Warning[] = [];
-			const entries = astProxy.entries();
-			let processed = 0;
-			let found = 0;
+    return {
+       name: "lookup-dois",
+       apply: async (astProxy) => {
+          const warnings: Warning[] = [];
+          const entries = astProxy.entries();
+          let processed = 0;
+          let found = 0;
 
-			for (const entry of entries) {
-				processed++;
+          for (const entry of entries) {
+             processed++;
 
-				const existingDoi = astProxy.lookupRenderedEntryValue(entry, "doi");
-				if (existingDoi && existingDoi.trim()) {
-					continue;
-				}
+             const existingDoi = astProxy.lookupRenderedEntryValue(entry, "doi");
+             if (existingDoi && existingDoi.trim()) {
+                continue;
+             }
 
-				const title = astProxy.lookupRenderedEntryValue(entry, "title");
-				if (!title || !title.trim()) {
-					continue;
-				}
+             const title = astProxy.lookupRenderedEntryValue(entry, "title");
+             if (!title || !title.trim()) {
+                continue;
+             }
 
-				const authorField = astProxy.lookupRenderedEntryValue(entry, "author") ||
-								  astProxy.lookupRenderedEntryValue(entry, "editor");
+             const authorField = astProxy.lookupRenderedEntryValue(entry, "author") ||
+                           astProxy.lookupRenderedEntryValue(entry, "editor");
 
-				if (!authorField || !authorField.trim()) {
-					continue;
-				}
+             if (!authorField || !authorField.trim()) {
+                continue;
+             }
 
-				try {
-					const authors = parseNameList(authorField);
-					let doi: string | undefined;
+             try {
+                const authors = parseNameList(authorField);
+                let doi: string | undefined;
 
-					for (const author of authors) {
-						if (author.last) {
-							doi = await searchDoi(title, author.last);
-							if (doi) break;
-						}
-					}
+                for (const author of authors) {
+                   if (author.last) {
+                      doi = await searchDoi(title, author.last);
+                      if (doi) break;
+                   }
+                }
 
-					if (doi) {
-						addDoiToEntry(entry, doi);
-						astProxy.invalidateField(entry.fields[entry.fields.length - 1]);
-						found++;
-					}
-				} catch (error) {
-					warnings.push({
-						code: "DOI_LOOKUP_ERROR",
-						message: `Failed to lookup DOI for entry ${entry.key}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-					});
-				}
-			}
+                if (doi) {
+                   const doiField = addDoiToEntry(entry, doi);
+                   astProxy.invalidateField(doiField);
+                   found++;
+                }
+             } catch (error) {
+                warnings.push({
+                   code: "DOI_LOOKUP_ERROR",
+                   message: `Failed to lookup DOI for entry ${entry.key}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                });
+             }
+          }
 
-			if (found > 0) {
-				warnings.push({
-					code: "DOI_LOOKUP_SUCCESS",
-					message: `Found ${found} DOIs out of ${processed} entries processed`,
-				});
-			}
+          if (found > 0) {
+             warnings.push({
+                code: "DOI_LOOKUP_SUCCESS",
+                message: `Found ${found} DOIs out of ${processed} entries processed`,
+             });
+          }
 
-			return warnings;
-		},
-	};
+          return warnings;
+       },
+    };
 }
 
 async function searchDoi(title: string, author: string): Promise<string | undefined> {
@@ -112,23 +112,24 @@ function normalize(str: string): string {
 		.trim();
 }
 
-function addDoiToEntry(entry: any, doi: string): void {
-	const doiField = {
-		type: "field" as const,
-		parent: entry,
-		name: "doi",
-		whitespacePrefix: "",
-		hasComma: false,
-		value: {
-			type: "concat" as const,
-			parent: null as any,
-			concat: [new LiteralNode(null as any, doi)],
-			canConsumeValue: false,
-			whitespacePrefix: ""
-		}
-	};
+function addDoiToEntry(entry: any, doi: string): any {
+    const doiField = {
+       type: "field" as const,
+       parent: entry,
+       name: "doi",
+       whitespacePrefix: "",
+       hasComma: false,
+       value: {
+          type: "concat" as const,
+          parent: null as any,
+          concat: [new LiteralNode(null as any, doi)],
+          canConsumeValue: false,
+          whitespacePrefix: ""
+       }
+    };
 
-	doiField.value.parent = doiField;
-	doiField.value.concat[0].parent = doiField.value;
-	entry.fields.push(doiField);
+    doiField.value.parent = doiField;
+    doiField.value.concat[0].parent = doiField.value;
+    entry.fields.push(doiField);
+    return doiField;
 }
