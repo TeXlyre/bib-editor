@@ -187,5 +187,10 @@ export const manPage = [
 	"  --quiet",
 	"      Suppress logs on stdout.",
 	"      ",
+	"  --lookup-dois",
+	"      Search for missing DOI fields using CrossRef. This will query CrossRef's",
+	"      database using the entry's title and author information to find matching",
+	"      DOIs.",
+	"      ",
 	"Full documentation <https://github.com/FlamingTempura/bibtex-tidy>"
 ];

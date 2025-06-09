@@ -238,6 +238,11 @@ bibtex-tidy references.bib
   --quiet
       Suppress logs on stdout.
       
+  --lookup-dois
+      Search for missing DOI fields using CrossRef. This will query CrossRef's
+      database using the entry's title and author information to find matching
+      DOIs.
+      
 ```
 
 <a name="sec-api"></a>

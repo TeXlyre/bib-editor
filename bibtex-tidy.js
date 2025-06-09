@@ -773,6 +773,17 @@ var optionDefinitions = [
     type: "boolean",
     defaultValue: true,
     deprecated: true
+  },
+  {
+    key: "lookupDois",
+    cli: { "--lookup-dois": true },
+    toCLI: /* @__PURE__ */ __name((val) => val ? "--lookup-dois" : void 0, "toCLI"),
+    title: "Lookup missing DOIs",
+    description: [
+      "Search for missing DOI fields using CrossRef. This will query CrossRef's database using the entry's title and author information to find matching DOIs."
+    ],
+    type: "boolean",
+    defaultValue: false
   }
 ];
 
@@ -4404,6 +4415,115 @@ function createLimitAuthorsTransform(maxAuthors) {
 }
 __name(createLimitAuthorsTransform, "createLimitAuthorsTransform");
 
+// src/transforms/lookupDois.ts
+function createLookupDoisTransform() {
+  return {
+    name: "lookup-dois",
+    apply: /* @__PURE__ */ __name(async (astProxy) => {
+      const warnings = [];
+      const entries = astProxy.entries();
+      let processed = 0;
+      let found = 0;
+      for (const entry of entries) {
+        processed++;
+        const existingDoi = astProxy.lookupRenderedEntryValue(entry, "doi");
+        if (existingDoi && existingDoi.trim()) {
+          continue;
+        }
+        const title2 = astProxy.lookupRenderedEntryValue(entry, "title");
+        if (!title2 || !title2.trim()) {
+          continue;
+        }
+        const authorField = astProxy.lookupRenderedEntryValue(entry, "author") || astProxy.lookupRenderedEntryValue(entry, "editor");
+        if (!authorField || !authorField.trim()) {
+          continue;
+        }
+        try {
+          const authors = parseNameList(authorField);
+          let doi;
+          for (const author of authors) {
+            if (author.last) {
+              doi = await searchDoi(title2, author.last);
+              if (doi) break;
+            }
+          }
+          if (doi) {
+            addDoiToEntry(entry, doi);
+            astProxy.invalidateField(entry.fields[entry.fields.length - 1]);
+            found++;
+          }
+        } catch (error) {
+          warnings.push({
+            code: "DOI_LOOKUP_ERROR",
+            message: `Failed to lookup DOI for entry ${entry.key}: ${error instanceof Error ? error.message : "Unknown error"}`
+          });
+        }
+      }
+      if (found > 0) {
+        warnings.push({
+          code: "DOI_LOOKUP_SUCCESS",
+          message: `Found ${found} DOIs out of ${processed} entries processed`
+        });
+      }
+      return warnings;
+    }, "apply")
+  };
+}
+__name(createLookupDoisTransform, "createLookupDoisTransform");
+async function searchDoi(title2, author) {
+  const normalizedTitle = normalize(title2);
+  const normalizedAuthor = normalize(author);
+  try {
+    const query = `${normalizedTitle} ${normalizedAuthor}`;
+    const apiUrl = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=1`;
+    const response = await fetch(apiUrl, {
+      headers: {
+        "Accept": "application/json",
+        "User-Agent": "BibTeX-Tidy/1.14.0 (https://github.com/FlamingTempura/bibtex-tidy)"
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    const data = await response.json();
+    if (data.message?.items?.length > 0) {
+      const item = data.message.items[0];
+      const score = item.score || 0;
+      if (score > 1) {
+        return item.DOI;
+      }
+    }
+    return void 0;
+  } catch (error) {
+    throw new Error(`DOI lookup failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+  }
+}
+__name(searchDoi, "searchDoi");
+function normalize(str) {
+  return str.replace(/[{}\\'"`^]/g, "").replace(/\$.*?\$/g, "").replace(/[^\x00-\x7F]/g, "").trim();
+}
+__name(normalize, "normalize");
+function addDoiToEntry(entry, doi) {
+  const doiField = {
+    type: "field",
+    parent: entry,
+    name: "doi",
+    whitespacePrefix: "",
+    hasComma: false,
+    value: {
+      type: "concat",
+      parent: null,
+      concat: [new LiteralNode(null, doi)],
+      canConsumeValue: false,
+      whitespacePrefix: ""
+    }
+  };
+  doiField.value.parent = doiField;
+  doiField.value.concat[0].parent = doiField.value;
+  entry.fields.push(doiField);
+}
+__name(addDoiToEntry, "addDoiToEntry");
+
 // src/transforms/lowercaseEntryType.ts
 function createLowercaseEntryTypeTransform() {
   return {
@@ -5002,6 +5122,9 @@ function generateTransformPipeline(options) {
   if (options.maxAuthors) {
     pipeline.push(createLimitAuthorsTransform(options.maxAuthors));
   }
+  if (options.lookupDois) {
+    pipeline.push(createLookupDoisTransform());
+  }
   if (options.lowercase) {
     pipeline.push(
       createLowercaseEntryTypeTransform(),
@@ -5061,7 +5184,7 @@ __name(generateTransformPipeline, "generateTransformPipeline");
 
 // src/tidy.ts
 var verbose = false;
-function tidy(input, options_ = {}) {
+async function tidy(input, options_ = {}) {
   const options = normalizeOptions(options_);
   const inputFixed = convertCRLF(input);
   const ast = parseBibTeX(inputFixed);
@@ -5075,7 +5198,7 @@ function tidy(input, options_ = {}) {
     console.log(logAST(ast));
   }
   for (const transform of pipeline) {
-    const result = transform.apply(cache);
+    const result = await transform.apply(cache);
     if (verbose) {
       console.log(`
 

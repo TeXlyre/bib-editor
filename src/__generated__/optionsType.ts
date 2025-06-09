@@ -224,4 +224,10 @@ export type BibTeXTidyOptions = {
 	 * Make a backup <filename>.original. Enabled by default (unless --modify is explicitly provided or outputting to a different file/stdio). Deprecated but provided for backward compatibility.
 	 */
 	backup?: boolean;
+	/**
+	 * Lookup missing DOIs
+	 *
+	 * Search for missing DOI fields using CrossRef. This will query CrossRef's database using the entry's title and author information to find matching DOIs.
+	 */
+	lookupDois?: boolean;
 };
