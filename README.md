@@ -9,7 +9,7 @@ In addition to bibtex-tidy's tools, this fork allows you to:
 
 ![Screen Recording 2020-10-23 at 16 25 26(1)](https://user-images.githubusercontent.com/1085434/97023051-dcbcf180-154c-11eb-9185-6f6de7c2fc68.gif)
 
-There are several ways you can use bibtex-tidy:
+There are several ways you can use bib-editor:
 * [In your browser](https://texlyre.github.io/bibtex-tidy/)
 * [CLI](#sec-cli)
 * [As a pre-commit-hook](#sec-precommit)
@@ -38,7 +38,7 @@ author={Feinberg, Andrew P. and Vogelstein, Bert},
 }
 ```
 
-After `bibtex-tidy references.bib`:
+After `bib-editor references.bib`:
 
 ```bibtex
 @article{feinberg1983technique,
@@ -66,8 +66,8 @@ After `bibtex-tidy references.bib`:
 Requires node v12 or later.
 
 ```sh
-npm install -g bibtex-tidy
-bibtex-tidy references.bib
+npm install -g bib-editor
+bib-editor references.bib
 ```
 
 ```manpage
@@ -238,7 +238,7 @@ bibtex-tidy references.bib
       --wrap (80 by default), --wrap=82
       
   --version, -v
-      Show bibtex-tidy version.
+      Show bib-editor version.
       
   --quiet
       Suppress logs on stdout.
@@ -259,7 +259,7 @@ npm install bibtex-tidy
 ```
 
 ```js
-const tidy = require('bibtex-tidy');
+const tidy = require('bib-editor');
 const bibtex = fs.readFileSync('references.bib', 'utf8');
 tidy.tidy(bibtex, { curly: true });
 ```
@@ -270,14 +270,14 @@ Documentation for the options can be found [here](https://github.com/TeXlyre/bib
 
 ## Pre-Commit Hook
 
-If you keep your bibtex files in a git repository, you can run bibtex-tidy each time you commit using [pre-commit](https://pre-commit.com/):
+If you keep your bibtex files in a git repository, you can run bib-editor each time you commit using [pre-commit](https://pre-commit.com/):
 
 ```yaml
 repos:
 -   repo: https://github.com/FlamingTempura/bibtex-tidy
     rev: v1.14.0 # see changelog for latest version
     hooks:
-    -   id: bibtex-tidy
+    -   id: bib-editor
         args: ['--align=100', '--curly'] # any other settings
 ```
 
