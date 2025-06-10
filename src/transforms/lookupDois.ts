@@ -1,4 +1,3 @@
-import type { ASTProxy } from "../ASTProxy";
 import { LiteralNode } from "../parsers/bibtexParser";
 import { parseNameList } from "../parsers/nameFieldParser";
 import type { Transform, Warning } from "../types";
@@ -130,6 +129,10 @@ function addDoiToEntry(entry: any, doi: string): any {
 
     doiField.value.parent = doiField;
     doiField.value.concat[0].parent = doiField.value;
+
+    if (!entry.fields) {
+        entry.fields = [];
+    }
     entry.fields.push(doiField);
     return doiField;
 }
