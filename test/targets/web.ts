@@ -20,7 +20,15 @@ export type WebResult = {
 let page: Page | undefined;
 async function getPage(): Promise<Page> {
 	if (page) return page;
-	const browser = await puppeteer.launch({ headless: true });
+	const browser = await puppeteer.launch({
+		headless: true,
+		args: [
+			'--no-sandbox',
+			'--disable-setuid-sandbox',
+			'--disable-dev-shm-usage',
+			'--disable-gpu'
+		]
+	});
 	page = await browser.newPage();
 	await page.goto(`file://${WEB_ROOT}`);
 	return page;
