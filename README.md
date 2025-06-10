@@ -1,4 +1,4 @@
-# bibtex-manager
+# bib-editor
 
 Tidy bibtex files. [Try it out](https://texlyre.github.io/bibtex-tidy/). Code based on [bibtex-tidy](https://github.com/FlamingTempura/bibtex-tidy)
 
