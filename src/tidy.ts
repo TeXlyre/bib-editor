@@ -10,7 +10,10 @@ import { convertCRLF } from "./utils";
 
 const verbose = false;
 
-export async function tidy(input: string, options_: Options = {}): Promise<BibTeXTidyResult> {
+export async function tidy(
+	input: string,
+	options_: Options = {},
+): Promise<BibTeXTidyResult> {
 	const options = normalizeOptions(options_);
 	const inputFixed = convertCRLF(input);
 	const ast = parseBibTeX(inputFixed);

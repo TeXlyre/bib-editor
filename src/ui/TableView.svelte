@@ -1,8 +1,8 @@
 <script lang="ts">
+import { createEventDispatcher } from "svelte";
 import { ASTProxy } from "../ASTProxy";
 import { parseBibTeX } from "../parsers/bibtexParser";
 import type { EntryNode, FieldNode } from "../parsers/bibtexParser";
-import { createEventDispatcher } from "svelte";
 
 export let bibtex: string;
 
@@ -59,77 +59,94 @@ $: {
 }
 
 function buildPositions(text: string, entries: EntryNode[]): EntryPosition[] {
-	return entries.map(entry => {
-		const typePattern = new RegExp(`@${escapeRegex(entry.parent.command)}\\s*\\{`, 'i');
-		const entryStart = text.search(typePattern);
-		if (entryStart === -1) return null;
+	return entries
+		.map((entry) => {
+			const typePattern = new RegExp(
+				`@${escapeRegex(entry.parent.command)}\\s*\\{`,
+				"i",
+			);
+			const entryStart = text.search(typePattern);
+			if (entryStart === -1) return null;
 
-		const typeStart = entryStart + 1;
-		const typeEnd = typeStart + entry.parent.command.length;
+			const typeStart = entryStart + 1;
+			const typeEnd = typeStart + entry.parent.command.length;
 
-		let keyRange: { start: number; end: number } | undefined;
-		if (entry.key) {
-			const afterBrace = text.indexOf('{', entryStart) + 1;
-			const keyMatch = text.substring(afterBrace).indexOf(entry.key);
-			if (keyMatch !== -1) {
-				const keyStart = afterBrace + keyMatch;
-				keyRange = { start: keyStart, end: keyStart + entry.key.length };
-			}
-		}
-
-		const fields = entry.fields.map(field => {
-			const fieldPattern = new RegExp(`\\b${escapeRegex(field.name)}\\s*=`, 'i');
-			const match = text.substring(entryStart).search(fieldPattern);
-			if (match === -1) return null;
-
-			const nameStart = entryStart + match;
-			const nameEnd = nameStart + field.name.length;
-			const equalPos = text.indexOf('=', nameEnd);
-
-			let valueStart = equalPos + 1;
-			while (valueStart < text.length && /\s/.test(text[valueStart])) valueStart++;
-
-			let valueEnd = valueStart;
-			let braceCount = 0;
-			let inQuotes = false;
-
-			while (valueEnd < text.length) {
-				const char = text[valueEnd];
-				if (char === '"' && braceCount === 0) inQuotes = !inQuotes;
-				else if (char === '{' && !inQuotes) braceCount++;
-				else if (char === '}' && !inQuotes) {
-					if (braceCount === 0) break;
-					braceCount--;
-				} else if ((char === ',' || char === '}') && braceCount === 0 && !inQuotes) break;
-				valueEnd++;
+			let keyRange: { start: number; end: number } | undefined;
+			if (entry.key) {
+				const afterBrace = text.indexOf("{", entryStart) + 1;
+				const keyMatch = text.substring(afterBrace).indexOf(entry.key);
+				if (keyMatch !== -1) {
+					const keyStart = afterBrace + keyMatch;
+					keyRange = { start: keyStart, end: keyStart + entry.key.length };
+				}
 			}
 
-			while (valueEnd > valueStart && /\s/.test(text[valueEnd - 1])) valueEnd--;
+			const fields = entry.fields
+				.map((field) => {
+					const fieldPattern = new RegExp(
+						`\\b${escapeRegex(field.name)}\\s*=`,
+						"i",
+					);
+					const match = text.substring(entryStart).search(fieldPattern);
+					if (match === -1) return null;
+
+					const nameStart = entryStart + match;
+					const nameEnd = nameStart + field.name.length;
+					const equalPos = text.indexOf("=", nameEnd);
+
+					let valueStart = equalPos + 1;
+					while (valueStart < text.length && /\s/.test(text[valueStart]))
+						valueStart++;
+
+					let valueEnd = valueStart;
+					let braceCount = 0;
+					let inQuotes = false;
+
+					while (valueEnd < text.length) {
+						const char = text[valueEnd];
+						if (char === '"' && braceCount === 0) inQuotes = !inQuotes;
+						else if (char === "{" && !inQuotes) braceCount++;
+						else if (char === "}" && !inQuotes) {
+							if (braceCount === 0) break;
+							braceCount--;
+						} else if (
+							(char === "," || char === "}") &&
+							braceCount === 0 &&
+							!inQuotes
+						)
+							break;
+						valueEnd++;
+					}
+
+					while (valueEnd > valueStart && /\s/.test(text[valueEnd - 1]))
+						valueEnd--;
+
+					return {
+						field,
+						nameRange: { start: nameStart, end: nameEnd },
+						valueRange: { start: valueStart, end: valueEnd },
+					};
+				})
+				.filter(Boolean);
 
 			return {
-				field,
-				nameRange: { start: nameStart, end: nameEnd },
-				valueRange: { start: valueStart, end: valueEnd }
+				entry,
+				keyRange,
+				typeRange: { start: typeStart, end: typeEnd },
+				fields,
 			};
-		}).filter(Boolean);
-
-		return {
-			entry,
-			keyRange,
-			typeRange: { start: typeStart, end: typeEnd },
-			fields
-		};
-	}).filter(Boolean);
+		})
+		.filter(Boolean);
 }
 
 function escapeRegex(str: string): string {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function getFieldValue(entry: EntryNode, fieldName: string): string {
 	if (fieldName === "key") return entry.key || "";
-	const field = entry.fields.find(f => f.name.toLowerCase() === fieldName);
-	return field ? field.value.concat.map(node => node.value).join(" ") : "";
+	const field = entry.fields.find((f) => f.name.toLowerCase() === fieldName);
+	return field ? field.value.concat.map((node) => node.value).join(" ") : "";
 }
 
 function getEntryType(entry: EntryNode): string {
@@ -138,8 +155,8 @@ function getEntryType(entry: EntryNode): string {
 
 function applySorting(entries: EntryNode[]): EntryNode[] {
 	return entries.sort((a, b) => {
-        let aVal: string;
-        let bVal: string;
+		let aVal: string;
+		let bVal: string;
 
 		if (sortColumn === "type") {
 			aVal = getEntryType(a).toLowerCase();
@@ -169,7 +186,8 @@ function startEdit(entryIndex: number, field: string) {
 	if (!entry) return;
 
 	editingCell = { entryIndex, field };
-	editValue = field === "type" ? getEntryType(entry) : getFieldValue(entry, field);
+	editValue =
+		field === "type" ? getEntryType(entry) : getFieldValue(entry, field);
 }
 
 function saveEdit() {
@@ -203,31 +221,45 @@ function saveEdit() {
 			pos.typeRange.end = pos.typeRange.start + editValue.length;
 			entry.parent.command = editValue;
 		} else {
-			const fieldPos = pos.fields.find(f => f.field.name.toLowerCase() === editingCell?.field);
+			const fieldPos = pos.fields.find(
+				(f) => f.field.name.toLowerCase() === editingCell?.field,
+			);
 
 			if (editValue.trim() === "") {
 				if (fieldPos) {
 					const start = fieldPos.nameRange.start;
 					let end = fieldPos.valueRange.end;
 					while (end < newText.length && /[\s,]/.test(newText[end])) {
-						if (newText[end] === ',') { end++; break; }
+						if (newText[end] === ",") {
+							end++;
+							break;
+						}
 						end++;
 					}
 					newText = removeRange(newText, start, end);
 					offset = -(end - start);
-					pos.fields = pos.fields.filter(f => f !== fieldPos);
-					entry.fields = entry.fields.filter(f => f.name.toLowerCase() !== editingCell!.field);
+					pos.fields = pos.fields.filter((f) => f !== fieldPos);
+					entry.fields = entry.fields.filter(
+						(f) => f.name.toLowerCase() !== editingCell?.field,
+					);
 				}
 			} else {
 				if (fieldPos) {
 					const formattedValue = `{${editValue}}`;
 					newText = replaceRange(newText, fieldPos.valueRange, formattedValue);
-					offset = formattedValue.length - (fieldPos.valueRange.end - fieldPos.valueRange.start);
-					fieldPos.valueRange.end = fieldPos.valueRange.start + formattedValue.length;
+					offset =
+						formattedValue.length -
+						(fieldPos.valueRange.end - fieldPos.valueRange.start);
+					fieldPos.valueRange.end =
+						fieldPos.valueRange.start + formattedValue.length;
 
-					const field = entry.fields.find(f => f.name.toLowerCase() === editingCell?.field);
+					const field = entry.fields.find(
+						(f) => f.name.toLowerCase() === editingCell?.field,
+					);
 					if (field) {
-						field.value.concat = [{ type: "braced", parent: field.value, value: editValue }];
+						field.value.concat = [
+							{ type: "braced", parent: field.value, value: editValue },
+						];
 					}
 				} else {
 					const insertPos = findInsertPosition(newText, pos.typeRange.start);
@@ -243,11 +275,17 @@ function saveEdit() {
 						hasComma: false,
 						value: {
 							type: "concat" as const,
-							parent: null as any,
-							concat: [{ type: "braced" as const, parent: null as any, value: editValue }],
+							parent: null as FieldNode,
+							concat: [
+								{
+									type: "braced" as const,
+									parent: null as FieldNode["value"],
+									value: editValue,
+								},
+							],
 							canConsumeValue: false,
-							whitespacePrefix: ""
-						}
+							whitespacePrefix: "",
+						},
 					};
 					newField.value.parent = newField;
 					newField.value.concat[0].parent = newField.value;
@@ -269,8 +307,14 @@ function saveEdit() {
 	editValue = "";
 }
 
-function replaceRange(text: string, range: { start: number; end: number }, replacement: string): string {
-	return text.substring(0, range.start) + replacement + text.substring(range.end);
+function replaceRange(
+	text: string,
+	range: { start: number; end: number },
+	replacement: string,
+): string {
+	return (
+		text.substring(0, range.start) + replacement + text.substring(range.end)
+	);
 }
 
 function insertAt(text: string, position: number, insertion: string): string {
@@ -293,7 +337,7 @@ function updatePositions(changedPos: EntryPosition, offset: number) {
 	const changeEnd = Math.max(
 		changedPos.typeRange.end,
 		changedPos.keyRange?.end || 0,
-		...changedPos.fields.map(f => f.valueRange.end)
+		...changedPos.fields.map((f) => f.valueRange.end),
 	);
 
 	for (const pos of positions) {

@@ -1,5 +1,10 @@
 <script lang="ts">
-import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
+import {
+	defaultKeymap,
+	history,
+	historyKeymap,
+	indentWithTab,
+} from "@codemirror/commands";
 import { bracketMatching } from "@codemirror/language";
 import { linter } from "@codemirror/lint";
 import { Compartment, EditorState } from "@codemirror/state";

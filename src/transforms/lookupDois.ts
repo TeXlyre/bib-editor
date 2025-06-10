@@ -1,4 +1,9 @@
-import { LiteralNode, EntryNode, FieldNode, ConcatNode } from "../parsers/bibtexParser";
+import {
+	type ConcatNode,
+	type EntryNode,
+	type FieldNode,
+	LiteralNode,
+} from "../parsers/bibtexParser";
 import { parseNameList } from "../parsers/nameFieldParser";
 import type { Transform, Warning } from "../types";
 
@@ -113,7 +118,7 @@ function normalize(str: string): string {
 	return str
 		.replace(/[{}\\'"`^]/g, "")
 		.replace(/\$.*?\$/g, "")
-		.replace(/[^\u0000-\u007F]/g, "")
+		.replace(/[\u0080-\uFFFF]/g, "")
 		.trim();
 }
 

@@ -4502,7 +4502,7 @@ async function searchDoi(title2, author) {
 }
 __name(searchDoi, "searchDoi");
 function normalize(str) {
-  return str.replace(/[{}\\'"`^]/g, "").replace(/\$.*?\$/g, "").replace(/[^\u0000-\u007F]/g, "").trim();
+  return str.replace(/[{}\\'"`^]/g, "").replace(/\$.*?\$/g, "").replace(/[\u0080-\uFFFF]/g, "").trim();
 }
 __name(normalize, "normalize");
 function addDoiToEntry(entry, doi) {
