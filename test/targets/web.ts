@@ -23,11 +23,11 @@ async function getPage(): Promise<Page> {
 	const browser = await puppeteer.launch({
 		headless: true,
 		args: [
-			'--no-sandbox',
-			'--disable-setuid-sandbox',
-			'--disable-dev-shm-usage',
-			'--disable-gpu'
-		]
+			"--no-sandbox",
+			"--disable-setuid-sandbox",
+			"--disable-dev-shm-usage",
+			"--disable-gpu",
+		],
 	});
 	page = await browser.newPage();
 	await page.goto(`file://${WEB_ROOT}`);
