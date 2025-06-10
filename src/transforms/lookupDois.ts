@@ -78,7 +78,7 @@ async function searchDoi(title: string, author: string): Promise<string | undefi
         const response = await fetch(apiUrl, {
             headers: {
                 "Accept": "application/json",
-                "User-Agent": "BibTeX-Tidy/1.14.0 (https://github.com/FlamingTempura/bibtex-tidy)"
+                "User-Agent": "BibTeX-Tidy/1.14.0 (https://github.com/TeXlyre/bibtex-tidy)"
             }
         });
 
@@ -112,6 +112,7 @@ function normalize(str: string): string {
 }
 
 function addDoiToEntry(entry: any, doi: string): any {
+    const literalNode = new LiteralNode(null as any, doi);
     const doiField = {
        type: "field" as const,
        parent: entry,
@@ -121,14 +122,14 @@ function addDoiToEntry(entry: any, doi: string): any {
        value: {
           type: "concat" as const,
           parent: null as any,
-          concat: [new LiteralNode(null as any, doi)],
+          concat: [literalNode],
           canConsumeValue: false,
           whitespacePrefix: ""
        }
     };
 
     doiField.value.parent = doiField;
-    doiField.value.concat[0].parent = doiField.value;
+    literalNode.parent = doiField.value;
 
     if (!entry.fields) {
         entry.fields = [];
