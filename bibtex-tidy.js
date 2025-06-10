@@ -4427,7 +4427,7 @@ function createLookupDoisTransform() {
       for (const entry of entries) {
         processed++;
         const existingDoi = astProxy.lookupRenderedEntryValue(entry, "doi");
-        if (existingDoi && existingDoi.trim()) {
+        if (existingDoi?.trim()) {
           continue;
         }
         const title2 = astProxy.lookupRenderedEntryValue(entry, "title");
@@ -4448,8 +4448,8 @@ function createLookupDoisTransform() {
             }
           }
           if (doi) {
-            addDoiToEntry(entry, doi);
-            astProxy.invalidateField(entry.fields[entry.fields.length - 1]);
+            const doiField = addDoiToEntry(entry, doi);
+            astProxy.invalidateField(doiField);
             found++;
           }
         } catch (error) {
@@ -4478,8 +4478,8 @@ async function searchDoi(title2, author) {
     const apiUrl = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=1`;
     const response = await fetch(apiUrl, {
       headers: {
-        "Accept": "application/json",
-        "User-Agent": "BibTeX-Tidy/1.14.0 (https://github.com/FlamingTempura/bibtex-tidy)"
+        Accept: "application/json",
+        "User-Agent": "BibTeX-Tidy/1.14.0 (https://github.com/TeXlyre/bibtex-tidy)"
       }
     });
     if (!response.ok) {
@@ -4495,15 +4495,18 @@ async function searchDoi(title2, author) {
     }
     return void 0;
   } catch (error) {
-    throw new Error(`DOI lookup failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+    throw new Error(
+      `DOI lookup failed: ${error instanceof Error ? error.message : "Unknown error"}`
+    );
   }
 }
 __name(searchDoi, "searchDoi");
 function normalize(str) {
-  return str.replace(/[{}\\'"`^]/g, "").replace(/\$.*?\$/g, "").replace(/[^\x00-\x7F]/g, "").trim();
+  return str.replace(/[{}\\'"`^]/g, "").replace(/\$.*?\$/g, "").replace(/[^\u0000-\u007F]/g, "").trim();
 }
 __name(normalize, "normalize");
 function addDoiToEntry(entry, doi) {
+  const literalNode = new LiteralNode(null, doi);
   const doiField = {
     type: "field",
     parent: entry,
@@ -4513,14 +4516,15 @@ function addDoiToEntry(entry, doi) {
     value: {
       type: "concat",
       parent: null,
-      concat: [new LiteralNode(null, doi)],
+      concat: [literalNode],
       canConsumeValue: false,
       whitespacePrefix: ""
     }
   };
   doiField.value.parent = doiField;
-  doiField.value.concat[0].parent = doiField.value;
+  literalNode.parent = doiField.value;
   entry.fields.push(doiField);
+  return doiField;
 }
 __name(addDoiToEntry, "addDoiToEntry");
 

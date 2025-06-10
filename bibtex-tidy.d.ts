@@ -223,6 +223,12 @@ export type BibTeXTidyOptions = {
 	 * Make a backup <filename>.original. Enabled by default (unless --modify is explicitly provided or outputting to a different file/stdio). Deprecated but provided for backward compatibility.
 	 */
 	backup?: boolean;
+	/**
+	 * Lookup missing DOIs
+	 *
+	 * Search for missing DOI fields using CrossRef. This will query CrossRef's database using the entry's title and author information to find matching DOIs.
+	 */
+	lookupDois?: boolean;
 };
 export type Options = Omit<BibTeXTidyOptions, "help" | "version" | "quiet" | "backup">;
 export type DuplicateRule = Exclude<BibTeXTidyOptions["duplicates"], boolean | undefined>[number];
@@ -231,6 +237,10 @@ export type Warning = ({
 } | {
 	code: "DUPLICATE_ENTRY";
 	rule: DuplicateRule;
+} | {
+	code: "DOI_LOOKUP_ERROR";
+} | {
+	code: "DOI_LOOKUP_SUCCESS";
 }) & {
 	message: string;
 };
@@ -239,6 +249,6 @@ export type BibTeXTidyResult = {
 	warnings: Warning[];
 	count: number;
 };
-export declare function tidy(input: string, options_?: Options): BibTeXTidyResult;
+export declare function tidy(input: string, options_?: Options): Promise<BibTeXTidyResult>;
 
 export {};

@@ -12,11 +12,11 @@ import {
 	keymap,
 	lineNumbers,
 } from "@codemirror/view";
-import { onMount, createEventDispatcher } from "svelte";
+import { createEventDispatcher, onMount } from "svelte";
 import type { BibTeXSyntaxError } from "../parsers/bibtexParser";
 import CopyButton from "./CopyButton.svelte";
-import ViewToggleButton from "./ViewToggleButton.svelte";
 import TableView from "./TableView.svelte";
+import ViewToggleButton from "./ViewToggleButton.svelte";
 import {
 	bibtexLanguage,
 	bibtexSyntaxHighlighting,
@@ -59,7 +59,7 @@ function createEditor() {
 				drawSelection(),
 				bibtexLanguage(),
 				bibtexSyntaxHighlighting(),
-				keymap.of([...defaultKeymap,...historyKeymap, indentWithTab]),
+				keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
 				history(),
 				onUpdate,
 				lintCompartment.of([]),
@@ -101,7 +101,7 @@ $: {
 		const currentPos = cmEditor.state.selection.main.head;
 		cmEditor.dispatch({
 			changes: { from: 0, to: cmEditor.state.doc.length, insert: bibtex },
-			selection: { anchor: Math.min(currentPos, bibtex.length) }
+			selection: { anchor: Math.min(currentPos, bibtex.length) },
 		});
 	}
 }
@@ -121,11 +121,11 @@ function handleViewToggle() {
 		cmEditor.destroy();
 		cmEditor = undefined;
 	}
-	dispatch('toggle');
+	dispatch("toggle");
 }
 
 function handleTableUpdate(event: CustomEvent<string>) {
-	dispatch('update', event.detail);
+	dispatch("update", event.detail);
 }
 </script>
 

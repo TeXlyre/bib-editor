@@ -138,7 +138,8 @@ function getEntryType(entry: EntryNode): string {
 
 function applySorting(entries: EntryNode[]): EntryNode[] {
 	return entries.sort((a, b) => {
-		let aVal: string, bVal: string;
+        let aVal: string;
+        let bVal: string;
 
 		if (sortColumn === "type") {
 			aVal = getEntryType(a).toLowerCase();
@@ -202,7 +203,7 @@ function saveEdit() {
 			pos.typeRange.end = pos.typeRange.start + editValue.length;
 			entry.parent.command = editValue;
 		} else {
-			const fieldPos = pos.fields.find(f => f.field.name.toLowerCase() === editingCell!.field);
+			const fieldPos = pos.fields.find(f => f.field.name.toLowerCase() === editingCell?.field);
 
 			if (editValue.trim() === "") {
 				if (fieldPos) {
@@ -224,7 +225,7 @@ function saveEdit() {
 					offset = formattedValue.length - (fieldPos.valueRange.end - fieldPos.valueRange.start);
 					fieldPos.valueRange.end = fieldPos.valueRange.start + formattedValue.length;
 
-					const field = entry.fields.find(f => f.name.toLowerCase() === editingCell!.field);
+					const field = entry.fields.find(f => f.name.toLowerCase() === editingCell?.field);
 					if (field) {
 						field.value.concat = [{ type: "braced", parent: field.value, value: editValue }];
 					}
