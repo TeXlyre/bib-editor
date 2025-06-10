@@ -4566,7 +4566,7 @@ function alphaNum(str) {
 }
 __name(alphaNum, "alphaNum");
 function convertCRLF(str) {
-  return str.replace(/\r\n?/g, "\n");
+  return (str || "").replace(/\r\n?/g, "\n");
 }
 __name(convertCRLF, "convertCRLF");
 function wrapText(line, lineWidth) {

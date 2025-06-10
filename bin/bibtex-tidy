@@ -4664,7 +4664,7 @@ function alphaNum(str) {
   return str.replace(/[^0-9A-Za-z]/g, "").toLocaleLowerCase();
 }
 function convertCRLF(str) {
-  return str.replace(/\r\n?/g, "\n");
+  return (str || "").replace(/\r\n?/g, "\n");
 }
 function wrapText(line, lineWidth) {
   const words2 = line.split(" ");

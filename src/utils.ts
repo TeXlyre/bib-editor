@@ -9,7 +9,7 @@ export function alphaNum(str: string): string {
 
 /** Normalize new lines. Convert CR/CRLF to LF. */
 export function convertCRLF(str: string): string {
-	return str.replace(/\r\n?/g, "\n");
+	return (str || "").replace(/\r\n?/g, "\n");
 }
 
 export function wrapText(line: string, lineWidth: number): string[] {

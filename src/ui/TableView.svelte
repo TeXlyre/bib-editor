@@ -140,13 +140,15 @@ function buildPositions(text: string, entries: EntryNode[]): EntryPosition[] {
 }
 
 function escapeRegex(str: string): string {
-	return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	return str?.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") || "";
 }
 
 function getFieldValue(entry: EntryNode, fieldName: string): string {
 	if (fieldName === "key") return entry.key || "";
 	const field = entry.fields.find((f) => f.name.toLowerCase() === fieldName);
-	return field ? field.value.concat.map((node) => node.value).join(" ") : "";
+	return field
+		? field.value.concat.map((node) => node.value || "").join(" ")
+		: "";
 }
 
 function getEntryType(entry: EntryNode): string {
@@ -159,11 +161,11 @@ function applySorting(entries: EntryNode[]): EntryNode[] {
 		let bVal: string;
 
 		if (sortColumn === "type") {
-			aVal = getEntryType(a).toLowerCase();
-			bVal = getEntryType(b).toLowerCase();
+			aVal = (getEntryType(a) || "").toLowerCase();
+			bVal = (getEntryType(b) || "").toLowerCase();
 		} else {
-			aVal = getFieldValue(a, sortColumn).toLowerCase();
-			bVal = getFieldValue(b, sortColumn).toLowerCase();
+			aVal = (getFieldValue(a, sortColumn) || "").toLowerCase();
+			bVal = (getFieldValue(b, sortColumn) || "").toLowerCase();
 		}
 
 		const result = aVal.localeCompare(bVal);
@@ -369,6 +371,11 @@ function handleKeydown(event: KeyboardEvent) {
 	if (event.key === "Enter") saveEdit();
 	else if (event.key === "Escape") cancelEdit();
 }
+
+function focusInput(node: HTMLInputElement) {
+	node.focus();
+	node.select();
+}
 </script>
 
 <div class="table-container">
@@ -405,7 +412,7 @@ function handleKeydown(event: KeyboardEvent) {
 								on:blur={saveEdit}
 								on:keydown={handleKeydown}
 								class="edit-input"
-								autofocus
+								use:focusInput
 							/>
 						{:else}
 							{getEntryType(entry)}
@@ -419,7 +426,7 @@ function handleKeydown(event: KeyboardEvent) {
 									on:blur={saveEdit}
 									on:keydown={handleKeydown}
 									class="edit-input"
-									autofocus
+									use:focusInput
 								/>
 							{:else}
 								{getFieldValue(entry, field)}
