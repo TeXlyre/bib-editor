@@ -1,11 +1,16 @@
-# bibtex-tidy
+# bibtex-manager
 
-Tidy bibtex files. [Try it out](https://flamingtempura.github.io/bibtex-tidy/).
+Tidy bibtex files. [Try it out](https://texlyre.github.io/bibtex-tidy/). Code based on [bibtex-tidy](https://github.com/FlamingTempura/bibtex-tidy)
+
+In addition to bibtex-tidy's tools, this fork allows you to:
+* find the best matching DOIs for each paper through the crossref API
+* view the bib as a file or table, with realtime synchronization between the two
+* deploy bibtex-manager to GitHub Pages
 
 ![Screen Recording 2020-10-23 at 16 25 26(1)](https://user-images.githubusercontent.com/1085434/97023051-dcbcf180-154c-11eb-9185-6f6de7c2fc68.gif)
 
 There are several ways you can use bibtex-tidy:
-* [In your browser](https://flamingtempura.github.io/bibtex-tidy/)
+* [In your browser](https://texlyre.github.io/bibtex-tidy/)
 * [CLI](#sec-cli)
 * [As a pre-commit-hook](#sec-precommit)
 * [Javascript/Typescript API](#sec-api)
@@ -259,7 +264,7 @@ const bibtex = fs.readFileSync('references.bib', 'utf8');
 tidy.tidy(bibtex, { curly: true });
 ```
 
-Documentation for the options can be found [here](https://github.com/FlamingTempura/bibtex-tidy/blob/master/src/__generated__/optionsType.ts)
+Documentation for the options can be found [here](https://github.com/TeXlyre/bibtex-tidy/blob/master/src/__generated__/optionsType.ts)
 
 <a name="sec-precommit"></a>
 
