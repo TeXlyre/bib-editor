@@ -1,26 +1,27 @@
 {
-	"name": "bibtex-tidy",
+	"name": "bib-editor",
 	"version": "1.14.0",
 	"description": "Tidy bibtex files",
-	"homepage": "https://github.com/FlamingTempura/bibtex-tidy",
+	"homepage": "https://github.com/TeXlyre/bib-editor",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/FlamingTempura/bibtex-tidy.git"
+		"url": "https://github.com/TeXlyre/bib-editor.git"
 	},
 	"author": "FlamingTempura",
+	"contributors": ["Fares Abawi <fares@abawi.me> (https://abawi.me)"],
 	"license": "MIT",
-	"main": "./bibtex-tidy.js",
-	"module": "./bibtex-tidy.js",
-	"types": "./bibtex-tidy.d.ts",
-	"man": "./bibtex-tidy.0",
+	"main": "./bib-editor.js",
+	"module": "./bib-editor.js",
+	"types": "./bib-editor.d.ts",
+	"man": "./bib-editor.0",
 	"bin": {
-		"bibtex-tidy": "./bin/bibtex-tidy"
+		"bib-editor": "./bin/bib-editor"
 	},
 	"files": [
-		"bin/bibtex-tidy",
-		"bibtex-tidy.js",
-		"bibtex-tidy.d.ts",
-		"bibtex-tidy.0"
+		"bin/bib-editor",
+		"bib-editor.js",
+		"bib-editor.d.ts",
+		"bib-editor.0"
 	],
 	"scripts": {
 		"build": "node -r esbuild-register build.ts",

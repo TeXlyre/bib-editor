@@ -2,12 +2,12 @@ NAME
     BibTeX Tidy v1.14.0
 
 SYNOPSIS
-    bibtex-tidy [infile] [-o outfile] [option...]
+    bib-editor [infile] [-o outfile] [option...]
 
 DESCRIPTION
     Cleaner and formatter for BibTeX files.
     
-    If no input or output file is specified, bibtex-tidy reads
+    If no input or output file is specified, bib-editor reads
     the standard input or writes to the standard output
     respectively. Use -m to overwrite the input file.
 
@@ -200,7 +200,7 @@ OPTIONS
         --wrap (80 by default), --wrap=82
         
     --version, -v
-        Show bibtex-tidy version.
+        Show bib-editor version.
         
     --quiet
         Suppress logs on stdout.
@@ -211,7 +211,7 @@ OPTIONS
         author information to find matching DOIs.
         
 BUGS
-    https://github.com/FlamingTempura/bibtex-tidy
+    https://github.com/TeXlyre/bib-editor
 
 AUTHOR
     FlamingTempura

@@ -6,7 +6,7 @@ import type { Options } from "../../src/optionUtils";
 const tidy =
 	process.env.NODE_ENV === "coverage"
 		? tidyImport
-		: require("../../bibtex-tidy.js").tidy;
+		: require("../../bib-editor").tidy;
 
 export type APIResult = BibTeXTidyResult;
 

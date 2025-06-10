@@ -14,15 +14,15 @@
 
 ### v1.4.0
 
-- #13 Allow multiple files on CLI. This will output multiple tidied files (ie this does not combine them) e.g. bibtex-tidy file1.bib file2.bib
+- #13 Allow multiple files on CLI. This will output multiple tidied files (ie this does not combine them) e.g. bib-editor file1.bib file2.bib
 - #14 Add .pre-commit-hooks.yaml
 - #15 Add option for trailing commas
 - #16 Option to remove empty fields
-- Add --no-lowercase option to prevent bibtex-tidy from changing case of field names and entry types
+- Add --no-lowercase option to prevent bib-editor from changing case of field names and entry types
 
 ### v1.4.1
 
-No changes, aside from correcting version number at top of bibtex-tidy.js
+No changes, aside from correcting version number at top of bib-editor.js
 
 ### v1.4.2
 
@@ -74,7 +74,7 @@ No changes, aside from correcting version number at top of bibtex-tidy.js
 
 ### v1.8.1
 
-No changes, aside from correcting version number at top of bibtex-tidy.js
+No changes, aside from correcting version number at top of bib-editor.js
 
 ### v1.8.2
 
@@ -82,7 +82,7 @@ Add type definitions
 
 ### v1.8.3
 
-No changes, aside from correcting version number at top of bibtex-tidy.js
+No changes, aside from correcting version number at top of bib-editor.js
 
 ### v1.8.4
 
@@ -96,10 +96,10 @@ Remove npm prepare script
 
 Features:
 
-- Bibtex keys can now be generated according to a JabRef template, such as `[auth:lower][year]`. See https://docs.jabref.org/setup/citationkeypatterns. Currently bibtex-tidy only supports a few markers and modifiers (see generateKeys.ts) (#179)
+- Bibtex keys can now be generated according to a JabRef template, such as `[auth:lower][year]`. See https://docs.jabref.org/setup/citationkeypatterns. Currently bib-editor only supports a few markers and modifiers (see generateKeys.ts) (#179)
 - Add --blank-lines option to separate entries with a blank line (#245)
 - Docker configuration added (#371)
-- The web UI will now persist the user's bibtex-tidy configuration in the URL (#344)
+- The web UI will now persist the user's bib-editor configuration in the URL (#344)
 - The web UI has a new look and feel based on material v3. This includes larger text, more space between interactive elements, higher contrast colours, and better consistency across browsers and OS's.
 - Add copy button to web UI (#177)
 - Add removeBraces to remove all braces from specified fields (#33)
@@ -122,11 +122,11 @@ Other enhancements:
 
 ### v1.10.0
 
-**Preview CLI changes**: bibtex-tidy v2 will introduce a breaking change to the CLI to enable working with stdio and prevent inadvertently overwriting files. This change can be enabled now by providing the `--v2` option.
+**Preview CLI changes**: bib-editor v2 will introduce a breaking change to the CLI to enable working with stdio and prevent inadvertently overwriting files. This change can be enabled now by providing the `--v2` option.
 
 In v2, input files will no longer be modified by default. Instead, you will need to specify `--modify`/`-m` option to overwrite the file, or `--output`/`-o` to output to a different file.
 
-If an input or output file is not provided, bibtex-tidy will read the standard input or write to standard output, respectively. The following are all equivalent:
+If an input or output file is not provided, bib-editor will read the standard input or write to standard output, respectively. The following are all equivalent:
 
 - `bibtex file1.bib -o file2.bib`
 - `bibtex file1.bib > file2.bib`

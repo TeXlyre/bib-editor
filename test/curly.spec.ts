@@ -45,4 +45,4 @@ test("do not brace abbreviated months", async () => {
 	const tidied = await bibtexTidy(input, { curly: true });
 	strictEqual(tidied.bibtex, expected);
 });
-//bibtex-tidy --curly --numeric --months --tab --align=13 --duplicates=key --no-escape --sort-fields --no-remove-dupe-fields YOUR_FILE.bib
+//bib-editor --curly --numeric --months --tab --align=13 --duplicates=key --no-escape --sort-fields --no-remove-dupe-fields YOUR_FILE.bib

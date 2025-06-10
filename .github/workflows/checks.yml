@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check NPM global install
-        run: npx bibtex-tidy -v
+        run: npx bib-editor -v
 
   check-deployed-library:
     runs-on: ubuntu-latest
@@ -65,5 +65,5 @@ jobs:
         run: |
           mkdir ~/foobar
           cd ~/foobar
-          npm install git+https://github.com/FlamingTempura/bibtex-tidy.git
-          node -e "console.log(require('bibtex-tidy').tidy('test'))"
+          npm install git+https://github.com/TeXlyre/bibtex-tidy.git
+          node -e "console.log(require('bib-editor').tidy('test'))"

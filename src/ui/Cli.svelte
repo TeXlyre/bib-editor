@@ -17,7 +17,7 @@ $: {
 <Collapsible title="CLI">
 	<p>To run this configuration on the command line:</p>
 	<code id="cli">
-		bibtex-tidy {#each args as [key, value]}
+		bib-editor {#each args as [key, value]}
 			<span class="opt-name">{key}</span>{#if value && value.length > 0}
 				=<span class="opt-val">{value}</span>
 			{/if}{' '}

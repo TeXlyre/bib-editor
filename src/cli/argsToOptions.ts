@@ -14,7 +14,7 @@ for (const opt of optionDefinitions) {
 /**
  * <input files> <options> <options> <input files>
  * @param skipInputArgs If the input is stdin, then we should assume that any filename at
- * the end of the command is part of an option, not an input. E.g. `bibtex-tidy --output
+ * the end of the command is part of an option, not an input. E.g. `bib-editor --output
  * foo.bib` with stdin should be assumed to be outputting to foo.bib (otherwise foo.bib
  * would be assumed to be the input file)
  */

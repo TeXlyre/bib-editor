@@ -8,7 +8,7 @@ import { optionsToCLIArgs } from "../../src/optionsToCLIArgs";
 export const TMP_DIR = join(__dirname, "..", "..", ".tmp");
 export const BIN_PATH =
 	process.env.BIBTEX_TIDY_BIN ??
-	join(__dirname, "..", "..", "bin", "bibtex-tidy");
+	join(__dirname, "..", "..", "bin", "bib-editor");
 
 mkdirSync(TMP_DIR, { recursive: true });
 
@@ -24,7 +24,7 @@ export type CLIResult = {
 };
 
 /**
- * Run bibtex-tidy through command line. Unlike API, this accepts multiple
+ * Run bib-editor through command line. Unlike API, this accepts multiple
  * bibtex files.
  */
 export function testCLI(
@@ -55,7 +55,7 @@ export function testCLI(
 	});
 
 	if (proc.status !== 0) {
-		console.log(`> bibtex-tidy ${args.join(" ")}`);
+		console.log(`> bib-editor ${args.join(" ")}`);
 		throw new Error(`CLI error: ${proc.stderr}`);
 	}
 

@@ -16,7 +16,7 @@ import { wrapText } from "./src/utils";
 const SRC_PATH = join(__dirname, "src");
 const BUILD_PATH = join(SRC_PATH, "__generated__");
 const WEB_PATH = join(__dirname, "docs");
-const CLI_BIN = env.BIBTEX_TIDY_BIN ?? join(__dirname, "bin", "bibtex-tidy");
+const CLI_BIN = env.BIBTEX_TIDY_BIN ?? join(__dirname, "bin", "bib-editor");
 
 /**
  * Browser features
@@ -108,7 +108,7 @@ const jsLibBuildOptions: BuildOptions = {
 	bundle: true,
 	entryPoints: ["./src/index.ts"],
 	keepNames: true,
-	outfile: join(__dirname, "bibtex-tidy.js"),
+	outfile: join(__dirname, "bib-editor.js"),
 	platform: "node",
 	write: true,
 };
@@ -170,10 +170,10 @@ const NAME = `BibTeX Tidy v${version}`;
 const DESCRIPTION = [
 	"Cleaner and formatter for BibTeX files.",
 	"",
-	"If no input or output file is specified, bibtex-tidy reads the standard input or writes to the standard output respectively. Use -m to overwrite the input file.",
+	"If no input or output file is specified, bib-editor reads the standard input or writes to the standard output respectively. Use -m to overwrite the input file.",
 ];
 
-const SYNOPSIS = "bibtex-tidy [infile] [-o outfile] [option...]";
+const SYNOPSIS = "bib-editor [infile] [-o outfile] [option...]";
 
 async function generateCLIHelp() {
 	const help: string[] = [
@@ -195,7 +195,7 @@ async function generateCLIHelp() {
 
 async function generateManPage() {
 	await writeFile(
-		"bibtex-tidy.0",
+		"bib-editor.0",
 		[
 			"NAME",
 			`    ${NAME}`,
@@ -303,7 +303,7 @@ async function buildTypeDeclarations() {
 		{ filePath: "./src/index.ts", output: { noBanner: true } },
 	])[0];
 	if (!typeFile) throw new Error("Failed to generate type file");
-	await writeFile("bibtex-tidy.d.ts", typeFile);
+	await writeFile("bib-editor.d.ts", typeFile);
 	console.timeEnd("Type declarations");
 }
 

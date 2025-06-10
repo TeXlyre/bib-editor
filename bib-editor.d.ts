@@ -208,7 +208,7 @@ export type BibTeXTidyOptions = {
 	/**
 	 * Version
 	 *
-	 * Show bibtex-tidy version.
+	 * Show bib-editor version.
 	 */
 	version?: boolean;
 	/**

@@ -1,11 +1,11 @@
 # bib-editor
 
-Tidy bibtex files. [Try it out](https://texlyre.github.io/bibtex-tidy/). Code based on [bibtex-tidy](https://github.com/FlamingTempura/bibtex-tidy)
+Tidy bibtex files. [Try it out](https://texlyre.github.io/bibtex-tidy/). Code based on [bib-editor](https://github.com/FlamingTempura/bibtex-tidy)
 
-In addition to bibtex-tidy's tools, this fork allows you to:
+In addition to bib-editor's tools, this fork allows you to:
 * find the best matching DOIs for each paper through the crossref API
 * view the bib as a file or table, with realtime synchronization between the two
-* deploy bibtex-manager to GitHub Pages
+* deploy bib-editor to GitHub Pages
 
 ![Screen Recording 2020-10-23 at 16 25 26(1)](https://user-images.githubusercontent.com/1085434/97023051-dcbcf180-154c-11eb-9185-6f6de7c2fc68.gif)
 
@@ -255,7 +255,7 @@ bib-editor references.bib
 ## Javascript/Typescript API
 
 ```
-npm install bibtex-tidy
+npm install bib-editor
 ```
 
 ```js
@@ -274,7 +274,7 @@ If you keep your bibtex files in a git repository, you can run bib-editor each t
 
 ```yaml
 repos:
--   repo: https://github.com/FlamingTempura/bibtex-tidy
+-   repo: https://github.com/FlamingTempura/bib-editor
     rev: v1.14.0 # see changelog for latest version
     hooks:
     -   id: bib-editor

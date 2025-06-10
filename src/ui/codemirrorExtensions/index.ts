@@ -1,11 +1,11 @@
 // Defines a lezer-based parser for bibtex for syntax highlighting.
 //
 // This parser supports incremental parsing and does not halt on errors, unlike
-// the existing parser used by bibtex-tidy, making it more suitable for syntax
+// the existing parser used by bib-editor, making it more suitable for syntax
 // highlighting. However, the grammar is incomplete and is only good enough for
 // syntax highlighting, so we need both parsers for now.
 //
-// In future we could modify bibtex-tidy's parser to be incremental and not halt
+// In future we could modify bib-editor's parser to be incremental and not halt
 // on errors, allowing us to remove this lezer based parser.
 
 import {

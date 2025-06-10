@@ -88,7 +88,7 @@ async function searchDoi(
 			headers: {
 				Accept: "application/json",
 				"User-Agent":
-					"BibTeX-Tidy/1.14.0 (https://github.com/TeXlyre/bibtex-tidy)",
+					"Bib-Editor/1.14.0 (https://github.com/TeXlyre/bibtex-tidy)",
 			},
 		});
 

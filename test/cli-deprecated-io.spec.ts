@@ -1,7 +1,7 @@
 // When passing "-" as a filename on the command line the output should also go to stdout.
 // Expected behaviour: the following command should output the formatted file to stdout.
 //
-// $ cat mybib.bib | bibtex-tidy --quiet -
+// $ cat mybib.bib | bib-editor --quiet -
 
 import { match, strictEqual } from "node:assert";
 import { spawnSync } from "node:child_process";

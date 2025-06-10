@@ -6,13 +6,13 @@
  * using `npm run build`. Edit files in './src' then rebuild.
  **/
 export const manPage = [
-	"Usage: bibtex-tidy [infile] [-o outfile] [option...]",
+	"Usage: bib-editor [infile] [-o outfile] [option...]",
 	"",
 	"BibTeX Tidy v1.14.0",
 	"===================",
 	"Cleaner and formatter for BibTeX files.",
 	"",
-	"If no input or output file is specified, bibtex-tidy reads the standard input or\nwrites to the standard output respectively. Use -m to overwrite the input file.",
+	"If no input or output file is specified, bib-editor reads the standard input or\nwrites to the standard output respectively. Use -m to overwrite the input file.",
 	"",
 	"Options:",
 	"  --help, -h",
@@ -182,7 +182,7 @@ export const manPage = [
 	"      --wrap (80 by default), --wrap=82",
 	"      ",
 	"  --version, -v",
-	"      Show bibtex-tidy version.",
+	"      Show bib-editor version.",
 	"      ",
 	"  --quiet",
 	"      Suppress logs on stdout.",
@@ -192,5 +192,5 @@ export const manPage = [
 	"      database using the entry's title and author information to find matching",
 	"      DOIs.",
 	"      ",
-	"Full documentation <https://github.com/FlamingTempura/bibtex-tidy>"
+	"Full documentation <https://github.com/TeXlyre/bib-editor>"
 ];

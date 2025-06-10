@@ -1,5 +1,5 @@
-- id: bibtex-tidy
-  name: bibtex-tidy
-  entry: ./bin/bibtex-tidy --modify
+- id: bib-editor
+  name: bib-editor
+  entry: ./bin/bib-editor --modify
   language: script
   types: ['bib']

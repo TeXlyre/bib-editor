@@ -8,7 +8,7 @@ cd "$SCRIPT_DIR/.."
 
 # In coverage mode the binary includes sourcemaps, so we create it in a different place.
 # I've only got this working if (a) the sourcemap is inline and (b) the file ends with.js.
-export BIBTEX_TIDY_BIN=./.tmp/bibtex-tidy.js
+export BIBTEX_TIDY_BIN=./.tmp/bib-editor.js
 
 export NODE_ENV=coverage
 

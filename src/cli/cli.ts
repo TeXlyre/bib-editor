@@ -13,7 +13,7 @@ const nodeVer = Number(versions.node.split(".")[0]);
 
 // Node v12 needed for Object.entries.
 if (nodeVer < 12) {
-	console.error("bibtex-tidy requires Node.js v12.0.0 or later");
+	console.error("bib-editor requires Node.js v12.0.0 or later");
 	exit(1);
 }
 
@@ -30,7 +30,7 @@ async function start(): Promise<void> {
 	if (unknownArgs.length > 0) {
 		const plural = unknownArgs.length > 1 ? "s" : "";
 		console.error(`Unknown option${plural}: ${unknownArgs.join(", ")}`);
-		console.error(`Try 'bibtex-tidy --help for more information.`);
+		console.error(`Try 'bib-editor --help for more information.`);
 		exit(1);
 	}
 
