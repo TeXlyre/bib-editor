@@ -24,18 +24,21 @@ let dispatch = createEventDispatcher<{ tidy: undefined }>();
 <aside id="sidebar">
 	<form on:submit={() => false}>
         <header class="intro">
-            <h1>BibTeX Tidy</h1>
+            <h1>BibTeX Editor</h1>
             <p>
                This tool tidies bibtex files by fixing inconsistent whitespace,
                removing duplicates, removing unwanted fields, and sorting entries.
             </p>
-            <p>
+            <p style="font-size: 0.8em;">
                Fork of <a href="https://github.com/FlamingTempura/bib-editor">BibTeX Tidy</a> by Peter West.
             </p>
-            <p>
+            <p style="font-size: 0.8em;">
                 Modified by <a href="https://abawi.me">Fares Abawi</a>
             </p>
             <p>
+               <a class="btn" href="https://www.npmjs.com/package/bib-editor">
+                  npm
+               </a>
                <a class="btn" href="https://github.com/TeXlyre/bib-editor">
                   Github
                </a>
