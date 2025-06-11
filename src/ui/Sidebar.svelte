@@ -42,10 +42,7 @@ let dispatch = createEventDispatcher<{ tidy: undefined }>();
                <a class="btn" href="https://github.com/TeXlyre/bib-editor">
                   Github
                </a>
-               <a
-                  class="btn"
-                  href="https://github.com/TeXlyre/bib-editor/issues"
-               >
+               <a class="btn" href="https://github.com/TeXlyre/bib-editor/issues">
                   Report a bug
                </a>
             </p>
