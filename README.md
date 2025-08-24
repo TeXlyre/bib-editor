@@ -1,6 +1,6 @@
 # bib-editor
 
-Tidy bibtex files. [Try it out](https://texlyre.github.io/bib-editor/). Code based on [bib-editor](https://github.com/FlamingTempura/bibtex-tidy)
+Tidy bibtex files. [Try it out](https://texlyre.github.io/bib-editor/). Code based on [bibtex-tidy](https://github.com/FlamingTempura/bibtex-tidy)
 
 In addition to bib-editor's tools, this fork allows you to:
 * find the best matching DOIs for each paper through the crossref API
@@ -274,7 +274,7 @@ If you keep your bibtex files in a git repository, you can run bib-editor each t
 
 ```yaml
 repos:
--   repo: https://github.com/FlamingTempura/bib-editor
+-   repo: https://github.com/FlamingTempura/bibtex-tidy
     rev: v1.14.0 # see changelog for latest version
     hooks:
     -   id: bib-editor
