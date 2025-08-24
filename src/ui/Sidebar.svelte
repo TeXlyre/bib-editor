@@ -30,7 +30,7 @@ let dispatch = createEventDispatcher<{ tidy: undefined }>();
                removing duplicates, removing unwanted fields, and sorting entries.
             </p>
             <p style="font-size: 0.8em;">
-               Fork of <a href="https://github.com/FlamingTempura/bib-editor">BibTeX Tidy</a> by Peter West.
+               Fork of <a href="https://github.com/FlamingTempura/bibtex-tidy">BibTeX Tidy</a> by Peter West.
             </p>
             <p style="font-size: 0.8em;">
                 Modified by <a href="https://abawi.me">Fares Abawi</a>
