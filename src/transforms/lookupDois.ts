@@ -123,25 +123,15 @@ function normalize(str: string): string {
 }
 
 function addDoiToEntry(entry: EntryNode, doi: string): FieldNode {
-	const literalNode = new LiteralNode(null as unknown as ConcatNode, doi);
-	const doiField = {
-		type: "field" as const,
-		parent: entry,
-		name: "doi",
-		whitespacePrefix: "",
-		hasComma: false,
-		value: {
-			type: "concat" as const,
-			parent: null as unknown as FieldNode,
-			concat: [literalNode],
-			canConsumeValue: false,
-			whitespacePrefix: "",
-		},
-	};
+	const field = new FieldNode(entry, "doi", "");
 
-	doiField.value.parent = doiField as FieldNode;
-	literalNode.parent = doiField.value as ConcatNode;
+	const value = normalizeDoiForBibtex(doi);
+	const node = new BracedNode(field.value);
+	node.value = value;
 
-	entry.fields.push(doiField as FieldNode);
-	return doiField as FieldNode;
+	field.value.concat.push(node);
+	field.value.canConsumeValue = false;
+
+	entry.fields.push(field);
+	return field;
 }
