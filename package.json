@@ -1,6 +1,6 @@
 {
 	"name": "bib-editor",
-	"version": "1.14.0",
+	"version": "1.14.1",
 	"description": "Tidy bibtex files",
 	"homepage": "https://github.com/TeXlyre/bib-editor",
 	"repository": {
@@ -8,7 +8,9 @@
 		"url": "https://github.com/TeXlyre/bib-editor.git"
 	},
 	"author": "FlamingTempura",
-	"contributors": ["Fares Abawi <fares@abawi.me> (https://abawi.me)"],
+	"contributors": [
+		"Fares Abawi <fares@abawi.me> (https://abawi.me)"
+	],
 	"license": "MIT",
 	"main": "./bib-editor.js",
 	"module": "./bib-editor.js",

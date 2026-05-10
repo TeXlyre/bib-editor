@@ -59,10 +59,10 @@ const CLI_BIN = env.BIBTEX_TIDY_BIN ?? join(__dirname, "bin", "bib-editor");
 // TODO: test on browserstack
 
 const BROWSER_TARGETS: string[] = [
-	"chrome55",
+	"chrome63",
 	"edge79",
-	"safari11",
-	"firefox52",
+	"firefox57",
+	"safari12",
 ];
 
 const NODE_TARGET = "node12";

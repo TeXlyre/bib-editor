@@ -1,11 +1,14 @@
 import {
+	BracedNode,
 	type ConcatNode,
 	type EntryNode,
 	type FieldNode,
-	LiteralNode,
 } from "../parsers/bibtexParser";
 import { parseNameList } from "../parsers/nameFieldParser";
 import type { Transform, Warning } from "../types";
+
+const MIN_SCORE = 50;
+const MIN_SCORE_GAP = 10;
 
 export function createLookupDoisTransform(): Transform {
 	return {
@@ -19,8 +22,10 @@ export function createLookupDoisTransform(): Transform {
 			for (const entry of entries) {
 				processed++;
 
-				const existingDoi = astProxy.lookupRenderedEntryValue(entry, "doi");
-				if (existingDoi?.trim()) {
+				const hasDoiField = entry.fields.some(
+					(f) => f.name.toLowerCase() === "doi",
+				);
+				if (hasDoiField) {
 					continue;
 				}
 
@@ -81,14 +86,19 @@ async function searchDoi(
 	const normalizedAuthor = normalize(author);
 
 	try {
-		const query = `${normalizedTitle} ${normalizedAuthor}`;
-		const apiUrl = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=1`;
+		const params = new URLSearchParams({
+			"query.bibliographic": normalizedTitle,
+			"query.author": normalizedAuthor,
+			rows: "2",
+			select: "DOI,score",
+		});
+		const apiUrl = `https://api.crossref.org/works?${params.toString()}`;
 
 		const response = await fetch(apiUrl, {
 			headers: {
 				Accept: "application/json",
 				"User-Agent":
-					"Bib-Editor/1.14.0 (https://github.com/TeXlyre/bibtex-tidy)",
+					"Bib-Editor/1.14.0 (https://github.com/TeXlyre/bibtex-tidy; mailto:support@texlyre.com)",
 			},
 		});
 
@@ -97,16 +107,19 @@ async function searchDoi(
 		}
 
 		const data = await response.json();
+		const items = data.message?.items ?? [];
+		if (items.length === 0) return undefined;
 
-		if (data.message?.items?.length > 0) {
-			const item = data.message.items[0];
-			const score = item.score || 0;
-			if (score > 1.0) {
-				return item.DOI;
-			}
+		const top = items[0];
+		const second = items[1];
+		const topScore = top.score ?? 0;
+
+		if (topScore < MIN_SCORE) return undefined;
+		if (second && topScore - (second.score ?? 0) < MIN_SCORE_GAP) {
+			return undefined;
 		}
 
-		return undefined;
+		return top.DOI;
 	} catch (error) {
 		throw new Error(
 			`DOI lookup failed: ${error instanceof Error ? error.message : "Unknown error"}`,
@@ -123,15 +136,27 @@ function normalize(str: string): string {
 }
 
 function addDoiToEntry(entry: EntryNode, doi: string): FieldNode {
-	const field = new FieldNode(entry, "doi", "");
+	const bracedNode = new BracedNode(null as unknown as ConcatNode);
+	bracedNode.value = doi;
 
-	const value = normalizeDoiForBibtex(doi);
-	const node = new BracedNode(field.value);
-	node.value = value;
+	const doiField = {
+		type: "field" as const,
+		parent: entry,
+		name: "doi",
+		whitespacePrefix: "",
+		hasComma: false,
+		value: {
+			type: "concat" as const,
+			parent: null as unknown as FieldNode,
+			concat: [bracedNode],
+			canConsumeValue: false,
+			whitespacePrefix: "",
+		},
+	};
 
-	field.value.concat.push(node);
-	field.value.canConsumeValue = false;
+	doiField.value.parent = doiField as FieldNode;
+	bracedNode.parent = doiField.value as ConcatNode;
 
-	entry.fields.push(field);
-	return field;
+	entry.fields.push(doiField as FieldNode);
+	return doiField as FieldNode;
 }

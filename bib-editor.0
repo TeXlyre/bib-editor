@@ -1,5 +1,5 @@
 NAME
-    BibTeX Tidy v1.14.0
+    BibTeX Tidy v1.14.1
 
 SYNOPSIS
     bib-editor [infile] [-o outfile] [option...]
